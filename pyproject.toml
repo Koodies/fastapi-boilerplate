@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "fastapi-boilerplate"
+version = "0.1.0"
+description = "A simple fastapi boilerplate"
+authors = ["Tan Ke Wei <kwtan@outlook.sg>"]
+readme = "README.md"
+packages = [{include = "fastapi_boilerplate"}]
+keywords = ["FastAPI", "Boilerplate", "Template"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.99.0"
+uvicorn = {extras = ["standard"], version = "^0.22.0"}
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
+pytest = "^7.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
