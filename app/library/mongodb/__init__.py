@@ -1,14 +1,19 @@
 from pymongo import MongoClient
+from pymongo.collection import Collection
+from typing import Optional
 
-db = None
+class Database:
+    instance = None
 
+    def __new__(cls):
+        if cls.instance is None:
+            cls.instance = super().__new__(cls)
+            cls.instance.client = MongoClient("mongodb://localhost:27017/")
+            cls.instance.db = cls.instance.client["test"]
+        return cls.instance
+    
+    def get_collection(self, collection_name) -> Collection:
+        return self.instance.db[collection_name]
 
-def get_db():
-    client = MongoClient("mongodb://localhost:27017/")
-    return client["test"]
-
-
-def insert_one(collection_name, data):
-    db = get_db()
-    result = db[collection_name].insert_one(data)
-    return result.inserted_id
+def get_db() -> Optional[Database]:
+    return Database()
