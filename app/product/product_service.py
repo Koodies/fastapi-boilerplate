@@ -16,7 +16,7 @@ def find_products() -> list[Product]:
 def find_product(id: ObjectId) -> Product:
     try:
         product = db.collection(COLLECTION_NAME).find_one({"_id": ObjectId(id)})
-        return Product(product)
+        return Product(**product)
     except Exception as e:
         print(e)
         raise e
@@ -27,6 +27,7 @@ def insert_product(product: Product) -> ObjectId:
     except Exception as e:
         print(e)
         raise e
+
     
 def delete_product(id: ObjectId) -> None:
     try:

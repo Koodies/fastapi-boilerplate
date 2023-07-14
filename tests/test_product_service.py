@@ -5,7 +5,12 @@ from datetime import datetime
 from unittest.mock import patch
 from mongomock import MongoClient
 from app.product.product_model import Product
-from app.product.product_service import delete_product, find_products, insert_product
+from app.product.product_service import (
+    delete_product,
+    find_product,
+    find_products,
+    insert_product,
+)
 
 mock_db = MongoClient()["test"]
 
@@ -24,9 +29,7 @@ class TestFindProducts(unittest.TestCase):
             }
         ]
         cls.mock_collection = mock_db["product"]
-        print(cls.product)
         cls.mock_collection.insert_many(deepcopy(cls.product))
-        print(cls.product)
         return super().setUpClass()
 
     def test_find_products(self, collection):
@@ -36,6 +39,36 @@ class TestFindProducts(unittest.TestCase):
         self.assertTrue(
             self.product[0].items() <= actual[0].dict(by_alias=True).items()
         )
+
+
+@freeze_time("2021-01-01")
+@patch("app.product.product_service.db.collection")
+class TestFindProductById(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.product = {
+            "name": "test",
+            "price": 100.0,
+            "isDeleted": False,
+            "createdAt": datetime.utcnow(),
+        }
+        cls.mock_collection = mock_db["product"]
+        return super().setUpClass()
+
+    def setUp(self) -> None:
+        self.existing_id = self.mock_collection.insert_one(
+            deepcopy(self.product)
+        ).inserted_id
+        return super().setUp()
+
+    def tearDown(self) -> None:
+        self.mock_collection.drop()
+        return super().tearDown()
+
+    def test_find_one_product(self, collection):
+        collection.return_value = self.mock_collection
+        actual = find_product(self.existing_id)
+        self.assertTrue(self.product.items() <= actual.dict(by_alias=True).items())
 
 
 @freeze_time("2021-01-01")
