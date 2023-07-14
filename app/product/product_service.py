@@ -1,6 +1,7 @@
 from bson import ObjectId
 from app.library.mongodb import get_db
 from app.product.product_model import Product
+from pymongo.results import DeleteResult
 
 db = get_db()
 COLLECTION_NAME = "product"
@@ -29,7 +30,7 @@ def insert_product(product: Product) -> ObjectId:
         raise e
 
     
-def delete_product(id: ObjectId) -> None:
+def delete_product(id: ObjectId) -> DeleteResult:
     try:
         return db.collection(COLLECTION_NAME).delete_one({"_id": ObjectId(id)})
     except Exception as e:

@@ -56,7 +56,7 @@ class TestFindProductById(unittest.TestCase):
         return super().setUpClass()
 
     def setUp(self) -> None:
-        self.existing_id = self.mock_collection.insert_one(
+        self.object_id = self.mock_collection.insert_one(
             deepcopy(self.product)
         ).inserted_id
         return super().setUp()
@@ -67,7 +67,7 @@ class TestFindProductById(unittest.TestCase):
 
     def test_find_one_product(self, collection):
         collection.return_value = self.mock_collection
-        actual = find_product(self.existing_id)
+        actual = find_product(self.object_id)
         self.assertTrue(self.product.items() <= actual.dict(by_alias=True).items())
 
 
@@ -100,19 +100,19 @@ class TestInsertOneProduct(unittest.TestCase):
 class TestDeleteOneProduct(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.product = [
-            {
-                "name": "test",
-                "price": 100.0,
-                "isDeleted": False,
-                "createdAt": datetime.utcnow(),
-            }
-        ]
+        cls.product = {
+            "name": "test",
+            "price": 100.0,
+            "isDeleted": False,
+            "createdAt": datetime.utcnow(),
+        }
         cls.mock_collection = mock_db["product"]
         return super().setUpClass()
 
     def setUp(self) -> None:
-        self.mock_collection.insert_many(deepcopy(self.product))
+        self.object_id = self.mock_collection.insert_one(
+            deepcopy(self.product)
+        ).inserted_id
         return super().setUp()
 
     def tearDown(self) -> None:
@@ -121,17 +121,26 @@ class TestDeleteOneProduct(unittest.TestCase):
 
     def test_delete_one_product(self, collection):
         collection.return_value = self.mock_collection
-        actual_id = self.mock_collection.find_one({"name": "test"})["_id"]
-        delete_product(actual_id)
-        actual = self.mock_collection.find_one({"_id": actual_id})
-        self.assertIsNone(actual)
+        actual = delete_product(self.object_id)
+        self.assertEqual(actual.deleted_count, 1)
+        expected = self.mock_collection.find_one({"_id": self.object_id})
+        self.assertIsNone(expected)
 
-    def test_delete_one_product_not_found(self, collection):
+    def test_with_unknown_object_id(self, collection):
         collection.return_value = self.mock_collection
         actual_id = "123456789012345678901234"
-        delete_product(actual_id)
-        actual = self.mock_collection.find_one({"_id": actual_id})
-        self.assertIsNone(actual)
+        actual = delete_product(actual_id)
+        self.assertEqual(actual.deleted_count, 0)
+        expected: dict = self.mock_collection.find_one({"_id": self.object_id})
+        self.assertTrue(self.product.items() <= expected.items())
+
+    def test_with_invalid_object_id_should_return_exception(self, collection):
+        collection.return_value = self.mock_collection
+        actual_id = "12345678asdcasss45678901234"
+        with self.assertRaises(Exception):
+            delete_product(actual_id)
+        expected: dict = self.mock_collection.find_one({"_id": self.object_id})
+        self.assertTrue(self.product.items() <= expected.items())
 
 
 if __name__ == "__main__":
