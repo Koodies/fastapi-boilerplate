@@ -12,7 +12,7 @@ class Database:
             cls.instance.db = cls.instance.client["test"]
         return cls.instance
     
-    def get_collection(self, collection_name) -> Collection:
+    def collection(self, collection_name) -> Collection:
         return self.instance.db[collection_name]
 
 def get_db() -> Optional[Database]:
