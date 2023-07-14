@@ -5,11 +5,18 @@ from .product_request_schema import CreateProductRequestSchema
 from .product_response_schema import (
     CreateProductResponseSchema,
     GetProductsResponseSchema,
+    GetProductResponseSchema
 )
 from app.product.product_model import Product
-from app.product.product_service import find_products, insert_product
+from app.product.product_service import find_products, insert_product, find_product, delete_product
 
 product_router = APIRouter()
+
+
+@product_router.get("/:id", status_code=200, response_model=GetProductResponseSchema)
+def get_product(id):
+    product = find_product()
+    return product
 
 
 @product_router.get("", status_code=200, response_model=GetProductsResponseSchema)
