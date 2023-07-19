@@ -3,6 +3,7 @@ import unittest
 from freezegun import freeze_time
 from datetime import datetime
 from unittest.mock import patch
+from bson import ObjectId
 from mongomock import MongoClient
 from app.product.product_model import Product
 from app.product.product_service import (
@@ -10,6 +11,7 @@ from app.product.product_service import (
     find_product,
     find_products,
     insert_product,
+    update_product,
 )
 
 mock_db = MongoClient()["test"]
@@ -93,6 +95,44 @@ class TestInsertOneProduct(unittest.TestCase):
         actual_id = insert_product(new_product)
         actual = self.mock_collection.find_one({"_id": actual_id})
         self.assertDictEqual(new_product.dict(by_alias=True), actual)
+
+
+@freeze_time("2021-01-01")
+@patch("app.product.product_service.db.collection")
+class TestUpdateOneProduct(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.product = {
+            "name": "test",
+            "price": 100.0,
+            "isDeleted": False,
+            "createdAt": datetime.utcnow(),
+        }
+        cls.mock_collection = mock_db["product"]
+        return super().setUpClass()
+
+    def setUp(self) -> None:
+        self.object_id = self.mock_collection.insert_one(
+            deepcopy(self.product)
+        ).inserted_id
+        return super().setUp()
+
+    def tearDown(self) -> None:
+        self.mock_collection.drop()
+        return super().tearDown()
+
+    def test_update_one_product(self, collection):
+        collection.return_value = self.mock_collection
+        actual = update_product(self.object_id, {"isDeleted": True})
+        self.assertEqual(actual.modified_count, 1)
+        expected = self.mock_collection.find_one({"_id": self.object_id})
+        self.assertTrue(expected["isDeleted"])
+
+    def test_update_product_that_do_not_exist(self, collection):
+        collection.return_value = self.mock_collection
+        object_id = ObjectId()
+        actual = update_product(object_id, {"isDeleted": True})
+        self.assertEqual(actual.modified_count, 0)
 
 
 @freeze_time("2021-01-01")
