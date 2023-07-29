@@ -1,26 +1,33 @@
-from typing import Union
-from fastapi import FastAPI
-from pydantic import BaseModel
+import os
+import uvicorn
+import click
+from dotenv import load_dotenv
 
-app = FastAPI()
+load_dotenv(".env")
+
+@click.command()
+@click.option(
+    "--env",
+    type=click.Choice(["local", "dev", "prod"], case_sensitive=False),
+    default="local",
+)
+@click.option(
+    "--debug",
+    type=click.BOOL,
+    is_flag=True,
+    default=False,
+)
+def main(env: str, debug: bool):
+    os.environ["ENV"] = env
+    os.environ["DEBUG"] = str(debug)
+    uvicorn.run(
+        app="app.server:app",
+        # host=config.APP_HOST,
+        # port=config.APP_PORT,
+        reload=True,
+        workers=1,
+    )
 
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
-
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
+if __name__ == "__main__":
+    main()
