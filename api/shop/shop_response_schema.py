@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class Shop(BaseModel):
     name: str
     description: str
@@ -9,6 +10,7 @@ class Shop(BaseModel):
 
 class GetShopsResponseSchema(BaseModel):
     data: list[Shop]
+
 
 class GetShopResponseSchema(Shop):
     pass

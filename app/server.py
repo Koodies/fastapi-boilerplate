@@ -22,7 +22,7 @@ logging_config = {
         "standard": {
             "class": "pythonjsonlogger.jsonlogger.JsonFormatter",
             "format": "%(asctime)s %(process)s %(levelname)s %(name)s %(module)s %(funcName)s %(lineno)s",
-            #"datefmt": "%d %b %y %H:%M:%S",
+            # "datefmt": "%d %b %y %H:%M:%S",
         },
     },
     "handlers": {

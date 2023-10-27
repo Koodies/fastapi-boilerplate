@@ -5,10 +5,15 @@ from .product_request_schema import CreateProductRequestSchema
 from .product_response_schema import (
     CreateProductResponseSchema,
     GetProductsResponseSchema,
-    GetProductResponseSchema
+    GetProductResponseSchema,
 )
 from app.product.product_model import Product
-from app.product.product_service import find_products, insert_product, find_product, delete_product
+from app.product.product_service import (
+    find_products,
+    insert_product,
+    find_product,
+    delete_product,
+)
 
 product_router = APIRouter()
 

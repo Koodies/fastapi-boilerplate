@@ -3,7 +3,9 @@ import uvicorn
 import click
 from dotenv import load_dotenv
 
+
 load_dotenv(".env")
+
 
 @click.command()
 @click.option(

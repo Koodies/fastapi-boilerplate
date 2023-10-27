@@ -1,6 +1,7 @@
 from bson import InvalidDocument, ObjectId
 from pydantic.json import ENCODERS_BY_TYPE
 
+
 class PydanticObjectId(ObjectId):
     """
     Object Id field. Compatible with Pydantic.

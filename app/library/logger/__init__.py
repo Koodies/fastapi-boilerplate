@@ -25,7 +25,7 @@ class RouterLoggingMiddleware(BaseHTTPMiddleware):
         )
         request_dict = await self._log_request(request)
         logging_dict["request"] = request_dict
-        #logging_dict["response"] = response_dict
+        # logging_dict["response"] = response_dict
 
         self._logger.info(logging_dict)
 
@@ -145,7 +145,7 @@ class AsyncIteratorWrapper:
     link: https://www.python.org/dev/peps/pep-0492/#example-2
     """
 
-    def __init__(self, obj): 
+    def __init__(self, obj):
         self._it = iter(obj)
 
     def __aiter__(self):
