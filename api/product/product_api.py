@@ -36,6 +36,6 @@ def get_products():
     response_model=CreateProductResponseSchema,
 )
 async def create_product(request: CreateProductRequestSchema):
-    product = Product(**request.dict(), createdAt=datetime.utcnow())
+    product = Product(**request.dict(), createdOn=datetime.utcnow())
     insert_product(product)
     return product.dict(by_alias=True)

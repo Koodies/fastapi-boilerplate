@@ -27,7 +27,7 @@ class TestFindProducts(unittest.TestCase):
                 "name": "test",
                 "price": 100.0,
                 "isDeleted": False,
-                "createdAt": datetime.utcnow(),
+                "createdOn": datetime.utcnow(),
             }
         ]
         cls.mock_collection = mock_db["product"]
@@ -52,7 +52,7 @@ class TestFindProductById(unittest.TestCase):
             "name": "test",
             "price": 100.0,
             "isDeleted": False,
-            "createdAt": datetime.utcnow(),
+            "createdOn": datetime.utcnow(),
         }
         cls.mock_collection = mock_db["product"]
         return super().setUpClass()
@@ -83,7 +83,7 @@ class TestInsertOneProduct(unittest.TestCase):
                 "name": "test",
                 "price": 100.0,
                 "isDeleted": False,
-                "createdAt": datetime.utcnow(),
+                "createdOn": datetime.utcnow(),
             }
         ]
         cls.mock_collection = mock_db["product"]
@@ -106,7 +106,7 @@ class TestUpdateOneProduct(unittest.TestCase):
             "name": "test",
             "price": 100.0,
             "isDeleted": False,
-            "createdAt": datetime.utcnow(),
+            "createdOn": datetime.utcnow(),
         }
         cls.mock_collection = mock_db["product"]
         return super().setUpClass()
@@ -144,7 +144,7 @@ class TestDeleteOneProduct(unittest.TestCase):
             "name": "test",
             "price": 100.0,
             "isDeleted": False,
-            "createdAt": datetime.utcnow(),
+            "createdOn": datetime.utcnow(),
         }
         cls.mock_collection = mock_db["product"]
         return super().setUpClass()

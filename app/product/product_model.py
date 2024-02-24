@@ -10,4 +10,4 @@ class Product(BaseModel):
     description: Optional[str] = None
     price: float
     is_deleted: bool = Field(default=False, alias="isDeleted")
-    created_at: datetime = Field(alias="createdAt")
+    created_on: datetime = Field(alias="createdOn")
